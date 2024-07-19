@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku/constants/game_sizes.dart';
-import 'package:sudoku/screens/game_screen.dart';
+import 'package:sudoku/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +14,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     GameSizes.init(context);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const GameScreen(),
+      home: const HomeScreen(),
     );
   }
 }

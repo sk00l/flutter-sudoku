@@ -1,10 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:sudoku/screens/widgets/sudoku_board.dart';
 import 'package:sudoku/screens/widgets/timer_container.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  final int clueCount;
+  const GameScreen({
+    super.key,
+    required this.clueCount,
+  });
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -15,15 +20,25 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Sudoku')),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Center(
+          child: Text('Sudoku'),
+        ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(8.0),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TimerContainer(),
-            Gap(12),
-            SudokuBoard(),
+            const TimerContainer(),
+            const Gap(12),
+            SudokuBoard(
+              clueCount: widget.clueCount,
+            ),
           ],
         ),
       ),

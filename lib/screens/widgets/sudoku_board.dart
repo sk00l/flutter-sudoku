@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:sudoku/constants/game_sizes.dart';
@@ -8,7 +9,11 @@ import 'package:sudoku/screens/widgets/keypad_widget.dart';
 import 'package:sudoku/screens/widgets/suduko_generator.dart';
 
 class SudokuBoard extends StatefulWidget {
-  const SudokuBoard({super.key});
+  final int clueCount;
+  const SudokuBoard({
+    super.key,
+    required this.clueCount,
+  });
 
   @override
   State<SudokuBoard> createState() => _SudokuBoardState();
@@ -20,6 +25,7 @@ class _SudokuBoardState extends State<SudokuBoard> {
   late List<List<int?>> puzzleBoard;
   late List<List<int?>> solvedBoard;
 
+//creates a list of list 0f 9x9 with false values, conditioning that the cells are not erasable if true
   List<List<bool>> nonErasableCells =
       List.generate(9, (index) => List.filled(9, false));
 
@@ -32,14 +38,15 @@ class _SudokuBoardState extends State<SudokuBoard> {
     super.initState();
     SudokuGenerator generator = SudokuGenerator();
     solvedBoard = generator.generateSolvedBoard();
-    puzzleBoard =
-        createPuzzle(solvedBoard, 25); // Change clue count for difficulty
+    puzzleBoard = createPuzzle(
+        solvedBoard, widget.clueCount); // Change clue count for difficulty
     _setNonErasableCells();
   }
 
   void _setNonErasableCells() {
     for (int row = 0; row < 9; row++) {
       for (int col = 0; col < 9; col++) {
+        //if a cell contains value sets the nonErasableCells to true by checing the puzzleBoard
         if (puzzleBoard[row][col] != null) {
           nonErasableCells[row][col] = true;
         }
@@ -48,6 +55,7 @@ class _SudokuBoardState extends State<SudokuBoard> {
   }
 
   void _onCellTap(int row, int col) {
+    // update the selected cell when tapped
     setState(() {
       selectedRow = row;
       selectedCol = col;
@@ -55,8 +63,15 @@ class _SudokuBoardState extends State<SudokuBoard> {
   }
 
   void _onKeyPressed(int number) {
+    //first checks if the selecgte cell is not null
+    //then checks if the cell is not erasable
+
     if (selectedRow != null &&
         selectedCol != null &&
+
+        //the nonErasableCells has values of nonErasable cells, if this returns true then the cell is not erasable
+        //so the ! operatros sets the nonErasableCells to false indicated cannot modify cell
+        //and vice versa for false values
         !nonErasableCells[selectedRow!][selectedCol!]) {
       setState(() {
         puzzleBoard[selectedRow!][selectedCol!] = number;
@@ -67,6 +82,8 @@ class _SudokuBoardState extends State<SudokuBoard> {
   void _onDeletePressed() {
     if (selectedRow != null &&
         selectedCol != null &&
+
+        //similar as checking the nonErasableCells and deleting is condition true and not deleting is false
         !nonErasableCells[selectedRow!][selectedCol!]) {
       setState(() {
         puzzleBoard[selectedRow!][selectedCol!] = null;
@@ -76,29 +93,40 @@ class _SudokuBoardState extends State<SudokuBoard> {
 
   bool _isHighlighted(int row, int col) {
     if (selectedRow == null || selectedCol == null) return false;
+    //calcualtes the box row and column of the selected cell
     int selectedBoxRow = selectedRow! ~/ 3;
     int selectedBoxCol = selectedCol! ~/ 3;
+
+    //calcualtes the box row and column of the current cell
     int boxRow = row ~/ 3;
     int boxCol = col ~/ 3;
+
+    //checks if the current cell is in the same columns and row as the seected cell
+    //checks if the current cell is in the same 3x3 box as the selected cell
 
     return row == selectedRow ||
         col == selectedCol ||
         (boxRow == selectedBoxRow && boxCol == selectedBoxCol);
   }
 
+//cechks if the cell is selected
   bool _isSelected(int row, int col) {
     return row == selectedRow && col == selectedCol;
   }
 
+  // Provides a hint by filling the selected cell with the correct value from the solved board.
   void _applyHint() {
     if (selectedRow != null && selectedCol != null) {
       setState(() {
+        //Sets the value of the selected cell in puzzleBoard to the corresponding value from solvedBoard.
         puzzleBoard[selectedRow!][selectedCol!] =
             solvedBoard[selectedRow!][selectedCol!];
         nonErasableCells[selectedRow!][selectedCol!] = true;
       });
     }
   }
+
+  // Solves the puzzle by filling in all cells with the values from the solved board.
 
   void _solvePuzzle() {
     setState(() {
