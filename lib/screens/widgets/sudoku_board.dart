@@ -46,7 +46,7 @@ class _SudokuBoardState extends State<SudokuBoard> {
   void _setNonErasableCells() {
     for (int row = 0; row < 9; row++) {
       for (int col = 0; col < 9; col++) {
-        //if a cell contains value sets the nonErasableCells to true by checing the puzzleBoard
+        //if a cell contains value sets the nonErasableCells to true by checking the puzzleBoard
         if (puzzleBoard[row][col] != null) {
           nonErasableCells[row][col] = true;
         }
@@ -138,6 +138,16 @@ class _SudokuBoardState extends State<SudokuBoard> {
     });
   }
 
+  void _redoPuzzle() {
+    setState(() {
+      SudokuGenerator generator = SudokuGenerator();
+      solvedBoard = generator.generateSolvedBoard();
+      puzzleBoard = createPuzzle(
+          solvedBoard, widget.clueCount); // Change clue count for difficulty
+      _setNonErasableCells();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -193,7 +203,11 @@ class _SudokuBoardState extends State<SudokuBoard> {
         const Gap(12),
         SizedBox(
           height: 80,
-          child: ActionButtons(onHint: _applyHint, onSolve: _solvePuzzle),
+          child: ActionButtons(
+            onHint: _applyHint,
+            onSolve: _solvePuzzle,
+            onRedo: _redoPuzzle,
+          ),
         )
       ],
     );

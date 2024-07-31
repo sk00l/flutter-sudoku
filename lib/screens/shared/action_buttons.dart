@@ -6,10 +6,12 @@ import 'package:sudoku/screens/shared/app_container.dart';
 class ActionButtons extends StatelessWidget {
   final VoidCallback onHint;
   final VoidCallback onSolve;
+  final VoidCallback onRedo;
   const ActionButtons({
     super.key,
     required this.onHint,
     required this.onSolve,
+    required this.onRedo,
   });
 
   @override
@@ -17,9 +19,12 @@ class ActionButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        AppContainer(
-          title: "Redo",
-          icon: const Icon(FontAwesomeIcons.rotateLeft),
+        InkWell(
+          onTap: onRedo,
+          child: AppContainer(
+            title: "New",
+            icon: const Icon(FontAwesomeIcons.rotateLeft),
+          ),
         ),
         InkWell(
           onTap: onSolve,

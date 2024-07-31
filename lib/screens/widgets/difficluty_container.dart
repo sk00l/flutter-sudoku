@@ -67,7 +67,7 @@ class _DifficlutyContainerState extends State<DifficlutyContainer> {
               const Gap(20),
               DifficultyButton(
                 difficulty: 'Hard',
-                clueCount: 17,
+                clueCount: 18,
                 onSelected: (clueCount) {
                   Navigator.push(
                     context,
